@@ -19,6 +19,7 @@ function Login() {
       );
 
       console.log(response.data);
+
       localStorage.setItem("token", response.data.token);
 
       alert("Login Successful");
@@ -29,6 +30,22 @@ function Login() {
 
       alert("Invalid Credentials");
     }
+  };
+
+  const getData = async () => {
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(
+      "http://localhost:8080/books/test",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    console.log(response.data);
   };
 
   return (
@@ -56,6 +73,12 @@ function Login() {
 
       <button onClick={handleLogin}>
         Login
+      </button>
+
+      <br /><br />
+
+      <button onClick={getData}>
+        Test API
       </button>
 
     </div>
