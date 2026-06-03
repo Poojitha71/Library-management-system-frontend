@@ -7,6 +7,8 @@ import Dashboard from "./Pages/Dashboard";
 import Books from "./Pages/Books";
 import AddBook from "./Pages/AddBook";
 import ProtectedRoute from "./components/ProtectedRoute";
+import BorrowedBooks from "./Pages/BorrowedBooks";
+import AdminBorrowHistory from "./Pages/AdminBorrowHistory";
 
 function App() {
   return (
@@ -25,7 +27,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route path="/admin-history" element={<AdminBorrowHistory />} />
       <Route
         path="/books"
         element={
@@ -40,6 +42,15 @@ function App() {
         element={
           <ProtectedRoute roleRequired="ADMIN">
             <AddBook />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/my-books"
+        element={
+          <ProtectedRoute>
+            <BorrowedBooks />
           </ProtectedRoute>
         }
       />

@@ -23,6 +23,10 @@ function Navbar() {
 
         {role === "ADMIN" && <Link to="/add-book">Add Book</Link>}
 
+        {role === "USER" && <Link to="/my-books">My Books</Link>}
+
+        {role === "ADMIN" && <Link to="/admin-history">Borrow History</Link>}
+
         <button onClick={handleLogout}>Logout</button>
       </div>
     </nav>

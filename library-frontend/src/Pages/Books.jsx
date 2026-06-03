@@ -10,47 +10,61 @@ function Books() {
     fetchBooks();
   }, []);
 
-  const deleteBook = async (id) => {
+  const borrowBook = async (bookId) => {
+    try {
+      const token = localStorage.getItem("token");
 
+      await axios.post(
+        `http://localhost:8080/borrow/${bookId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Book borrowed successfully");
+
+      fetchBooks();
+    } catch (error) {
+      console.log(error);
+
+      alert("Failed to borrow book");
+    }
+  };
+
+  const deleteBook = async (id) => {
     const confirmDelete = window.confirm(
-        "Are you sure you want to delete this book?"
+      "Are you sure you want to delete this book?"
     );
 
     if (!confirmDelete) {
-        return;
+      return;
     }
 
     try {
+      const token = localStorage.getItem("token");
 
-        const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:8080/books/delete/book/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        await axios.delete(
-            `http://localhost:8080/books/delete/book/${id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
+      alert("Book Deleted Successfully");
 
-        alert("Book Deleted Successfully");
-
-        fetchBooks();
-
+      fetchBooks();
     } catch (error) {
+      console.log(error);
 
-        console.log(error);
-
-        if (error.response?.status === 403) {
-
-            alert("You are not authorized to delete books");
-
-        } else {
-
-            alert("Failed To Delete Book");
-        }
+      if (error.response?.status === 403) {
+        alert("You are not authorized to delete books");
+      } else {
+        alert("Failed To Delete Book");
+      }
     }
-};
+  };
 
   const fetchBooks = async () => {
     try {
@@ -100,6 +114,16 @@ function Books() {
 
               {role === "ADMIN" && (
                 <button onClick={() => deleteBook(book.id)}>Delete</button>
+              )}
+
+              {role === "USER" && (
+                <>
+                  {book.available ? (
+                    <button onClick={() => borrowBook(book.id)}>Borrow</button>
+                  ) : (
+                    <p>Already Borrowed</p>
+                  )}
+                </>
               )}
             </div>
           ))}
