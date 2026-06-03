@@ -8,6 +8,11 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const handleLogout=() =>{
+    localStorage.removeItem("token");
+    alert("user logout successfully");
+    navigate("/");
+  }
   const handleLogin = async () => {
 
     try {
@@ -33,22 +38,6 @@ function Login() {
 
       alert("Invalid Credentials");
     }
-  };
-
-  const getData = async () => {
-
-    const token = localStorage.getItem("token");
-
-    const response = await axios.get(
-      "http://localhost:8080/books/test",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-
-    console.log(response.data);
   };
 
   return (
@@ -80,8 +69,8 @@ function Login() {
 
       <br /><br />
 
-      <button onClick={getData}>
-        Test API
+      <button onClick={handleLogout}>
+        Logout
       </button>
 
     </div>
