@@ -1,32 +1,49 @@
-import Login from "./components/Login";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./Dashboard";
-import ProtectedRoute from "./ProtectedRoute";
-import AddBook from "./AddBook";
+import { Routes, Route } from "react-router-dom";
+
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Dashboard from "./Pages/Dashboard";
+import Books from "./Pages/Books";
+import AddBook from "./Pages/AddBook";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />}></Route>
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        ></Route>
-        <Route
-          path="/add-book"
-          element={
-            <ProtectedRoute>
-              <AddBook />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      {/* Public Pages */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* Protected Pages */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/books"
+        element={
+          <ProtectedRoute>
+            <Books />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/add-book"
+        element={
+          <ProtectedRoute roleRequired="ADMIN">
+            <AddBook />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 

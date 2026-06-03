@@ -1,36 +1,57 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./Books.css";
-import Navbar from "./Navbar";
+import "../styles/Books.css";
+import Navbar from "../components/Navbar";
 function Books() {
   const [books, setBooks] = useState([]);
+  const role = localStorage.getItem("role");
 
   useEffect(() => {
     fetchBooks();
   }, []);
 
   const deleteBook = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
 
-      await axios.delete(`http://localhost:8080/books/delete/book/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const confirmDelete = window.confirm(
+        "Are you sure you want to delete this book?"
+    );
 
-      alert("Book Deleted Successfully");
-    } catch (error) {
-      console.log(error);
-
-      if (error.response?.status === 403) {
-        alert("You are not authorized to delete books");
-      } else {
-        alert("Failed to delete book");
-      }
+    if (!confirmDelete) {
+        return;
     }
-  };
-  
+
+    try {
+
+        const token = localStorage.getItem("token");
+
+        await axios.delete(
+            `http://localhost:8080/books/delete/book/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        alert("Book Deleted Successfully");
+
+        fetchBooks();
+
+    } catch (error) {
+
+        console.log(error);
+
+        if (error.response?.status === 403) {
+
+            alert("You are not authorized to delete books");
+
+        } else {
+
+            alert("Failed To Delete Book");
+        }
+    }
+};
+
   const fetchBooks = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -50,7 +71,6 @@ function Books() {
     } catch (error) {
       console.log(error);
     }
-    
   };
 
   return (
@@ -78,7 +98,9 @@ function Books() {
                 {book.available ? "Available" : "Not Available"}
               </p>
 
-              <button onClick={() => deleteBook(book.id)}>Delete</button>
+              {role === "ADMIN" && (
+                <button onClick={() => deleteBook(book.id)}>Delete</button>
+              )}
             </div>
           ))}
         </div>
